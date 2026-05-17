@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostly AI - Detalhes do Projeto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans">
+
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <a href="/dashboard" class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Hostly AI</a>
+            <span class="text-gray-600">/</span>
+            <span class="text-sm font-medium text-gray-400">{{ projeto.titulo }}</span>
+        </div>
+        <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition-colors">Voltar ao Painel</a>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[700px]">
+                <div class="bg-gray-800/50 px-5 py-3 border-b border-gray-800 flex justify-between items-center">
+                    <span class="text-xs font-mono text-blue-400 uppercase tracking-widest">Código Fonte ({{ projeto.linguagem_principal }})</span>
+                </div>
+                <div class="p-6 overflow-auto flex-grow bg-gray-950/50">
+                    <pre class="font-mono text-sm text-gray-300 leading-relaxed"><code>{{ projeto.conteudo_codigo }}</code></pre>
+                </div>
+            </section>
+
+            <section class="space-y-6 overflow-auto h-[700px] pr-2">
+                {% if analise %}
+                    {% set data = analise.resultado_ia | from_json %}
+                    
+                    <div class="bg-gradient-to-br from-indigo-900/20 to-blue-900/20 border border-blue-500/30 p-8 rounded-2xl shadow-xl">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-3xl">🚀</span>
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">Carreira Sugerida</h2>
+                                <p class="text-blue-400 font-medium">{{ data.carreira_sugerida }}</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                            "{{ data.justificativa }}"
+                        </p>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Pontos Fortes Identificados</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for ponto in data.pontos_fortes %}
+                                        <span class="text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-800/30">{{ ponto }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl">
+                        <h3 class="text-lg font-bold mb-4 text-gray-200 flex items-center gap-2">
+                            📚 Próximos Passos recomendados
+                        </h3>
+                        <ul class="space-y-3">
+                            {% for step in data.proximos_steps %}
+                                <li class="flex items-start gap-3 text-sm text-gray-400">
+                                    <span class="text-blue-500 mt-1">✔</span> {{ step }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-3 tracking-widest text-center">Tecnologias que você domina neste projeto</h4>
+                        <div class="flex justify-center flex-wrap gap-3">
+                            {% for tech in data.tecnologias_detectadas %}
+                                <span class="text-xs font-mono text-gray-300 bg-gray-800 px-3 py-1 rounded-full border border-gray-700">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="bg-gray-900 border border-gray-800 p-12 rounded-2xl text-center">
+                        <p class="text-gray-500">Nenhuma análise disponível para este projeto ainda.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+
+</body>
+</html>
